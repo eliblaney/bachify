@@ -9,17 +9,11 @@ public class Key {
 	private static final String MINOR_SCALE = "WHWWHWW";
 
 	private final Note tonic;
-	private final boolean major;
-	private final boolean minor;
 	private final String scalePattern;
 	private final List<Note> scale = new ArrayList<>();
 
 	public Key(String tonic, boolean major) {
 		this(new Note(tonic, 4), major);
-	}
-
-	public Key(String tonic, String scalePattern) {
-		this(new Note(tonic, 4), scalePattern);
 	}
 
 	public Key(Note tonic, boolean major) {
@@ -29,8 +23,6 @@ public class Key {
 	public Key(Note tonic, String scalePattern) {
 		this.tonic = tonic;
 		scalePattern = scalePattern.toUpperCase();
-		this.major = scalePattern.equals(MAJOR_SCALE);
-		this.minor = scalePattern.equals(MINOR_SCALE);
 		this.scalePattern = scalePattern;
 
 		int octave = tonic.getOctave();
@@ -56,20 +48,16 @@ public class Key {
 		}
 	}
 
-	public Note getTonic() {
-		return this.tonic;
-	}
-
-	public boolean isMajor() {
-		return this.major;
-	}
-
-	public boolean isMinor() {
-		return !this.major;
+	public Key(String tonic, String scalePattern) {
+		this(new Note(tonic, 4), scalePattern);
 	}
 
 	public String getScalePattern() {
 		return this.scalePattern;
+	}
+
+	public int getScaleDegree(String note) {
+		return getScaleDegree(new Note(note, 4));
 	}
 
 	public int getScaleDegree(Note note) {
@@ -83,12 +71,8 @@ public class Key {
 		return thisChar - tonicChar + 1;
 	}
 
-	public int getScaleDegree(String note) {
-		return getScaleDegree(new Note(note, 4));
-	}
-
-	public List<Note> getScale() {
-		return scale;
+	public Note getTonic() {
+		return this.tonic;
 	}
 
 	@Override
@@ -98,6 +82,18 @@ public class Key {
 			str.append(n).append(" ");
 		}
 		return str.toString();
+	}
+
+	public boolean isMajor() {
+		return scalePattern.equals(MAJOR_SCALE);
+	}
+
+	public boolean isMinor() {
+		return scalePattern.equals(MINOR_SCALE);
+	}
+
+	public List<Note> getScale() {
+		return scale;
 	}
 
 }

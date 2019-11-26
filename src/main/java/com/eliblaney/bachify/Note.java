@@ -2,10 +2,14 @@ package com.eliblaney.bachify;
 
 public class Note {
 
-	private static float[] octaveFourFrequencies = {261.63f, 277.18f, 296.66f, 311.13f, 329.63f, 349.23f, 369.99f, 392.00f, 415.30f, 440.00f, 466.16f, 493.88f};
+	private static final float[] octaveFourFrequencies = {261.63f, 277.18f, 296.66f, 311.13f, 329.63f, 349.23f, 369.99f, 392.00f, 415.30f, 440.00f, 466.16f, 493.88f};
 
 	private final String note;
 	private final int octave;
+
+	public Note(char noteLetter, int accidental, int octave) {
+		this(buildNoteString(noteLetter, accidental), octave);
+	}
 
 	public Note(String note, int octave) {
 		if(!validateNote(note)) {
@@ -20,33 +24,22 @@ public class Note {
 		this.octave = octave;
 	}
 
-	public Note(char noteLetter, int accidental, int octave) {
-		this(buildNoteString(noteLetter, accidental), octave);
+	private static String buildNoteString(char noteLetter, int accidental) {
+		StringBuilder accidentalStr = new StringBuilder();
+		if(accidental > 0) {
+			for(int i = 0; i < accidental; i++) {
+				accidentalStr.append("#");
+			}
+		} else {
+			for(int i = 0; i < -accidental; i++) {
+				accidentalStr.append("b");
+			}
+		}
+		return Character.toUpperCase(noteLetter) + accidentalStr.toString();
 	}
 
 	public Note sharp() {
 		return new Note(getNoteLetter(), getAccidental() + 1, octave);
-	}
-
-	public Note flat() {
-		return new Note(getNoteLetter(), getAccidental() - 1, octave);
-	}
-
-	public char getNoteLetter() {
-		return note.toCharArray()[0];
-	}
-
-	public int getAccidental() {
-		// natural = 0
-		if(note.length() == 1) {
-			return 0;
-		}
-		// sharp = 1
-		if(note.charAt(1) == '#') {
-			return note.substring(1).length();
-		}
-		// flat = -1
-		return -note.substring(1).length();
 	}
 
 	public Note skip(Interval interval, boolean up) {
@@ -89,29 +82,25 @@ public class Note {
 		return note;
 	}
 
+	public char getNoteLetter() {
+		return note.toCharArray()[0];
+	}
+
 	public int getOctave() {
 		return this.octave;
 	}
 
-	public double getFrequency() {
-		return octaveFourFrequencies[getCode()] * Math.pow(2, octave - 4);
-	}
-
-	public boolean equals(Object o) {
-		if(o instanceof Note) {
-			Note n = (Note) o;
-			return n.note.equals(this.note) && n.octave == this.octave;
+	public int getAccidental() {
+		// natural = 0
+		if(note.length() == 1) {
+			return 0;
 		}
-		return false;
-	}
-
-	public boolean isEnharmonic(Note n) {
-		return n.getCode() == this.getCode();
-	}
-
-	@Override
-	public String toString() {
-		return note;
+		// sharp = 1
+		if(note.charAt(1) == '#') {
+			return note.substring(1).length();
+		}
+		// flat = -1
+		return -note.substring(1).length();
 	}
 
 	private int getCode() {
@@ -142,6 +131,31 @@ public class Note {
 		return code + getAccidental();
 	}
 
+	public Note flat() {
+		return new Note(getNoteLetter(), getAccidental() - 1, octave);
+	}
+
+	public double getFrequency() {
+		return octaveFourFrequencies[getCode()] * Math.pow(2, octave - 4);
+	}
+
+	public boolean equals(Object o) {
+		if(o instanceof Note) {
+			Note n = (Note) o;
+			return n.note.equals(this.note) && n.octave == this.octave;
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return note;
+	}
+
+	public boolean isEnharmonic(Note n) {
+		return n.getCode() == this.getCode();
+	}
+
 	private static boolean validateNote(String note) {
 		if(note == null || note.length() == 0) {
 			return false;
@@ -156,20 +170,6 @@ public class Note {
 			return accidental.replace("S", "").replace("#", "").replace("B", "").length() == 0;
 		}
 		return true;
-	}
-
-	private static String buildNoteString(char noteLetter, int accidental) {
-		StringBuilder accidentalStr = new StringBuilder();
-		if(accidental > 0) {
-			for(int i = 0; i < accidental; i++) {
-				accidentalStr.append("#");
-			}
-		} else {
-			for(int i =0; i < -accidental; i++) {
-				accidentalStr.append("b");
-			}
-		}
-		return Character.toUpperCase(noteLetter) + accidentalStr.toString();
 	}
 
 }
