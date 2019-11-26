@@ -10,6 +10,7 @@ public class Bachify {
 		System.out.println(new Key("Ab", true));
 		System.out.println(new Key("Cb", true));
 		System.out.println(new Key("G", false));
+		Interval i = Interval.MAJOR_THIRD;
 	}
 
 
