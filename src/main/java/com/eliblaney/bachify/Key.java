@@ -71,6 +71,10 @@ public class Key {
 		return thisChar - tonicChar + 1;
 	}
 
+	public Note getScaleDegree(int scaleDegree) {
+		return getScale().get(scaleDegree - 1);
+	}
+
 	public Note getTonic() {
 		return this.tonic;
 	}

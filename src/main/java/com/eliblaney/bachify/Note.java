@@ -7,6 +7,10 @@ public class Note {
 	private final String note;
 	private final int octave;
 
+	public Note(String note) {
+		this(note, 4);
+	}
+
 	public Note(String note, int octave) {
 		if(!validateNote(note)) {
 			throw new IllegalArgumentException("Invalid note: " + note);
@@ -50,6 +54,10 @@ public class Note {
 	}
 
 	public Note skip(Interval interval, boolean up) {
+		if(interval == Interval.OCTAVE) {
+			return new Note(getNoteLetter(), getAccidental(), getOctave() + (up ? 1 : -1));
+		}
+
 		// adjust note letter
 		int noteLetterDiff = interval.getNoteLetterDiff();
 		char noteLetter = (char) (getNoteLetter() + ((up ? 1 : -1) * noteLetterDiff));
@@ -105,16 +113,30 @@ public class Note {
 		return false;
 	}
 
-	public boolean isEnharmonic(Note n) {
-		return n.getCode() == this.getCode();
-	}
-
 	@Override
 	public String toString() {
 		return note;
 	}
 
-	private int getCode() {
+	public boolean isEnharmonic(Note n) {
+		return n.getCode() == this.getCode();
+	}
+
+	public boolean isHigher(Note n) {
+		if(this.getOctave() < n.getOctave()) {
+			return false;
+		}
+		return this.getOctave() > n.getOctave() || this.getCode() > n.getCode();
+	}
+
+	public boolean isLower(Note n) {
+		if(this.getOctave() > n.getOctave()) {
+			return false;
+		}
+		return this.getOctave() < n.getOctave() || this.getCode() < n.getCode();
+	}
+
+	int getCode() {
 		int code = -1;
 		switch(getNoteLetter()) {
 			case 'C':
