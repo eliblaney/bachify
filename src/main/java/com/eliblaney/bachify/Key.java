@@ -25,19 +25,9 @@ public class Key {
 		scalePattern = scalePattern.toUpperCase();
 		this.scalePattern = scalePattern;
 
-		int octave = tonic.getOctave();
-		char tonicLetter = this.tonic.getNoteLetter();
 		Note note = tonic;
 		scale.add(tonic);
 		for(int i = 0; i < scalePattern.length() - 1; i++){
-			char noteLetter = (char) (tonicLetter + i);
-			if(noteLetter > 'G') {
-				noteLetter -= 7;
-			}
-			if(noteLetter == 'C') {
-				// keep octave consistent with scale direction
-				octave++;
-			}
 			boolean whole = scalePattern.charAt(i) == 'W';
 			if(whole) {
 				note = note.skip(Interval.WHOLE_STEP, true);
@@ -72,7 +62,7 @@ public class Key {
 	}
 
 	public Note getScaleDegree(int scaleDegree) {
-		return getScale().get(scaleDegree - 1);
+		return scale.get(scaleDegree - 1);
 	}
 
 	public Note getTonic() {
@@ -96,8 +86,9 @@ public class Key {
 		return scalePattern.equals(MINOR_SCALE);
 	}
 
-	public List<Note> getScale() {
-		return scale;
+	public Note[] getScale() {
+		Note[] noteArray = new Note[scale.size()];
+		return scale.toArray(noteArray);
 	}
 
 }

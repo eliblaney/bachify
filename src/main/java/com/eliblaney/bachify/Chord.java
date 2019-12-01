@@ -45,7 +45,9 @@ public class Chord {
 			notes.add(chordFifth);
 			notes.remove(0);
 		}
-		this.chordMembers = notes.toArray(new Note[notes.size()]);
+
+		Note[] noteArray = new Note[notes.size()];
+		this.chordMembers = notes.toArray(noteArray);
 	}
 
 	public Note[] getChordMembers() {
@@ -115,7 +117,8 @@ public class Chord {
 				}
 			}
 
-			return intervals.toArray(new Interval[intervals.size()]);
+			Interval[] intervalArray = new Interval[intervals.size()];
+			return intervals.toArray(intervalArray);
 		}
 	}
 
